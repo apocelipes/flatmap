@@ -183,6 +183,15 @@ func BenchmarkFlatMapRangeInt(b *testing.B) {
 	}
 }
 
+func BenchmarkFlatMapIterateInt(b *testing.B) {
+	fm := genIntFlatMap(lengthLimit)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for range fm.All() {
+		}
+	}
+}
+
 func BenchmarkMapRangeInt(b *testing.B) {
 	m := genIntMap(lengthLimit)
 	b.ResetTimer()
@@ -199,6 +208,15 @@ func BenchmarkFlatMapRangeString(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for iter := fm.Range(); !iter.HasNext(); iter.Next() {
 			_, _ = iter.Val()
+		}
+	}
+}
+
+func BenchmarkFlatMapIterateString(b *testing.B) {
+	fm := genStringFlatMap(lengthLimit)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for range fm.All() {
 		}
 	}
 }
