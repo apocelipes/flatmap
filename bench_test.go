@@ -7,15 +7,15 @@ import (
 )
 
 func genIntFlatMap(length int) *FlatMap[int, string] {
-	fm := FlatMap[int, string]{}
+	fm := NewFlatMap[int, string](length)
 	for i := 0; i < length; i++ {
 		fm.Set(i, fmt.Sprintf("result: %d", i))
 	}
-	return &fm
+	return fm
 }
 
 func genIntMap(length int) map[int]string {
-	m := make(map[int]string)
+	m := make(map[int]string, length)
 	for i := 0; i < length; i++ {
 		m[i] = fmt.Sprintf("result: %d", i)
 	}
@@ -23,15 +23,15 @@ func genIntMap(length int) map[int]string {
 }
 
 func genStringFlatMap(length int) *FlatMap[string, int] {
-	fm := FlatMap[string, int]{}
+	fm := NewFlatMap[string, int](length)
 	for i := 0; i < length; i++ {
 		fm.Set(fmt.Sprintf("test:%d", i), i)
 	}
-	return &fm
+	return fm
 }
 
 func genStringMap(length int) map[string]int {
-	m := make(map[string]int)
+	m := make(map[string]int, length)
 	for i := 0; i < length; i++ {
 		m[fmt.Sprintf("test:%d", i)] = i
 	}
@@ -40,15 +40,15 @@ func genStringMap(length int) map[string]int {
 
 // length greater than 64
 func genLongStringFlatMap(length int) *FlatMap[string, int] {
-	fm := FlatMap[string, int]{}
+	fm := NewFlatMap[string, int](length)
 	for i := 0; i < length; i++ {
 		fm.Set(strings.Repeat("a", 64)+fmt.Sprintf("test:%d", i), i)
 	}
-	return &fm
+	return fm
 }
 
 func genLongStringMap(length int) map[string]int {
-	m := make(map[string]int)
+	m := make(map[string]int, length)
 	for i := 0; i < length; i++ {
 		m[strings.Repeat("a", 64)+fmt.Sprintf("test:%d", i)] = i
 	}
@@ -126,7 +126,7 @@ func BenchmarkMapGetInt(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < lengthLimit; j++ {
-			_, _ = m[j]
+			_ = m[j]
 		}
 	}
 }
@@ -146,7 +146,7 @@ func BenchmarkMapGetString(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < lengthLimit; j++ {
-			_, _ = m["test:50"]
+			_ = m["test:50"]
 		}
 	}
 }
@@ -168,7 +168,7 @@ func BenchmarkMapGetLongString(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < lengthLimit; j++ {
-			_, _ = m[key]
+			_ = m[key]
 		}
 	}
 }
