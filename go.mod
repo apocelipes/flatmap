@@ -1,3 +1,3 @@
 module github.com/apocelipes/flatmap
 
-go 1.23
+go 1.24

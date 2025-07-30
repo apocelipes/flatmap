@@ -8,7 +8,7 @@ import (
 
 func genIntFlatMap(length int) *FlatMap[int, string] {
 	fm := NewFlatMap[int, string](length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		fm.Set(i, fmt.Sprintf("result: %d", i))
 	}
 	return fm
@@ -16,7 +16,7 @@ func genIntFlatMap(length int) *FlatMap[int, string] {
 
 func genIntMap(length int) map[int]string {
 	m := make(map[int]string, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		m[i] = fmt.Sprintf("result: %d", i)
 	}
 	return m
@@ -24,7 +24,7 @@ func genIntMap(length int) map[int]string {
 
 func genStringFlatMap(length int) *FlatMap[string, int] {
 	fm := NewFlatMap[string, int](length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		fm.Set(fmt.Sprintf("test:%d", i), i)
 	}
 	return fm
@@ -32,7 +32,7 @@ func genStringFlatMap(length int) *FlatMap[string, int] {
 
 func genStringMap(length int) map[string]int {
 	m := make(map[string]int, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		m[fmt.Sprintf("test:%d", i)] = i
 	}
 	return m
@@ -41,7 +41,7 @@ func genStringMap(length int) map[string]int {
 // length greater than 64
 func genLongStringFlatMap(length int) *FlatMap[string, int] {
 	fm := NewFlatMap[string, int](length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		fm.Set(strings.Repeat("a", 64)+fmt.Sprintf("test:%d", i), i)
 	}
 	return fm
@@ -49,7 +49,7 @@ func genLongStringFlatMap(length int) *FlatMap[string, int] {
 
 func genLongStringMap(length int) map[string]int {
 	m := make(map[string]int, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		m[strings.Repeat("a", 64)+fmt.Sprintf("test:%d", i)] = i
 	}
 	return m
@@ -59,83 +59,83 @@ const lengthLimit = 64
 
 func BenchmarkFlatMapSetInt(b *testing.B) {
 	fm := NewFlatMap[int, int](lengthLimit)
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
-			fm.Set(j, j+1)
+	for b.Loop() {
+		for i := range lengthLimit {
+			fm.Set(i, i+1)
 		}
 	}
 }
 
 func BenchmarkMapSetInt(b *testing.B) {
 	m := make(map[int]int, lengthLimit)
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
-			m[j] = j + 1
+	for b.Loop() {
+		for i := range lengthLimit {
+			m[i] = i + 1
 		}
 	}
 }
 
 func BenchmarkFlatMapSetString(b *testing.B) {
 	fm := NewFlatMap[string, int](lengthLimit)
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
-			fm.Set(fmt.Sprintf("testing: %d", j), j+1)
+	for b.Loop() {
+		for i := range lengthLimit {
+			fm.Set(fmt.Sprintf("testing: %d", i), i+1)
 		}
 	}
 }
 
 func BenchmarkMapSetString(b *testing.B) {
 	m := make(map[string]int, lengthLimit)
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
-			m[fmt.Sprintf("testing: %d", j)] = j + 1
+	for b.Loop() {
+		for i := range lengthLimit {
+			m[fmt.Sprintf("testing: %d", i)] = i + 1
 		}
 	}
 }
 
 func BenchmarkFlatMapSetLongString(b *testing.B) {
 	fm := NewFlatMap[string, int](lengthLimit)
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
-			fm.Set(strings.Repeat("a", 64)+fmt.Sprintf("testing: %d", j), j+1)
+	for b.Loop() {
+		for i := range lengthLimit {
+			fm.Set(strings.Repeat("a", 64)+fmt.Sprintf("testing: %d", i), i+1)
 		}
 	}
 }
 
 func BenchmarkMapSetLongString(b *testing.B) {
 	m := make(map[string]int, lengthLimit)
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
-			m[strings.Repeat("a", 64)+fmt.Sprintf("testing: %d", j)] = j + 1
+	for b.Loop() {
+		for i := range lengthLimit {
+			m[strings.Repeat("a", 64)+fmt.Sprintf("testing: %d", i)] = i + 1
 		}
 	}
 }
 
 func BenchmarkFlatMapGetInt(b *testing.B) {
 	fm := genIntFlatMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
-			_, _ = fm.Get(j)
+
+	for b.Loop() {
+		for i := range lengthLimit {
+			_, _ = fm.Get(i)
 		}
 	}
 }
 
 func BenchmarkMapGetInt(b *testing.B) {
 	m := genIntMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
-			_ = m[j]
+
+	for b.Loop() {
+		for i := range lengthLimit {
+			_ = m[i]
 		}
 	}
 }
 
 func BenchmarkFlatMapGetString(b *testing.B) {
 	fm := genStringFlatMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
+
+	for b.Loop() {
+		for range lengthLimit {
 			_, _ = fm.Get("test:50")
 		}
 	}
@@ -143,9 +143,9 @@ func BenchmarkFlatMapGetString(b *testing.B) {
 
 func BenchmarkMapGetString(b *testing.B) {
 	m := genStringMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
+
+	for b.Loop() {
+		for range lengthLimit {
 			_ = m["test:50"]
 		}
 	}
@@ -154,9 +154,9 @@ func BenchmarkMapGetString(b *testing.B) {
 func BenchmarkFlatMapGetLongString(b *testing.B) {
 	fm := genLongStringFlatMap(lengthLimit)
 	key := strings.Repeat("a", 64) + "test:50"
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
+
+	for b.Loop() {
+		for range lengthLimit {
 			_, _ = fm.Get(key)
 		}
 	}
@@ -165,9 +165,9 @@ func BenchmarkFlatMapGetLongString(b *testing.B) {
 func BenchmarkMapGetLongString(b *testing.B) {
 	m := genLongStringMap(lengthLimit)
 	key := strings.Repeat("a", 64) + "test:50"
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < lengthLimit; j++ {
+
+	for b.Loop() {
+		for range lengthLimit {
 			_ = m[key]
 		}
 	}
@@ -175,8 +175,8 @@ func BenchmarkMapGetLongString(b *testing.B) {
 
 func BenchmarkFlatMapRangeInt(b *testing.B) {
 	fm := genIntFlatMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		for iter := fm.Range(); !iter.HasNext(); iter.Next() {
 			_, _ = iter.Val()
 		}
@@ -185,8 +185,8 @@ func BenchmarkFlatMapRangeInt(b *testing.B) {
 
 func BenchmarkFlatMapIterateInt(b *testing.B) {
 	fm := genIntFlatMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		for range fm.All() {
 		}
 	}
@@ -194,8 +194,8 @@ func BenchmarkFlatMapIterateInt(b *testing.B) {
 
 func BenchmarkMapRangeInt(b *testing.B) {
 	m := genIntMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		for k := range m {
 			_ = m[k]
 		}
@@ -204,8 +204,8 @@ func BenchmarkMapRangeInt(b *testing.B) {
 
 func BenchmarkFlatMapRangeString(b *testing.B) {
 	fm := genStringFlatMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		for iter := fm.Range(); !iter.HasNext(); iter.Next() {
 			_, _ = iter.Val()
 		}
@@ -214,8 +214,8 @@ func BenchmarkFlatMapRangeString(b *testing.B) {
 
 func BenchmarkFlatMapIterateString(b *testing.B) {
 	fm := genStringFlatMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		for range fm.All() {
 		}
 	}
@@ -223,8 +223,8 @@ func BenchmarkFlatMapIterateString(b *testing.B) {
 
 func BenchmarkMapRangeString(b *testing.B) {
 	m := genStringMap(lengthLimit)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		for k := range m {
 			_ = m[k]
 		}
@@ -232,45 +232,45 @@ func BenchmarkMapRangeString(b *testing.B) {
 }
 
 func BenchmarkFlatMapDeleteInt(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		b.StopTimer()
 		fm := genIntFlatMap(lengthLimit)
 		b.StartTimer()
-		for j := 0; j < lengthLimit; j++ {
-			fm.Delete(j)
+		for i := range lengthLimit {
+			fm.Delete(i)
 		}
 	}
 }
 
 func BenchmarkMapDeleteInt(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		b.StopTimer()
 		m := genIntMap(lengthLimit)
 		b.StartTimer()
-		for j := 0; j < lengthLimit; j++ {
-			delete(m, j)
+		for i := range lengthLimit {
+			delete(m, i)
 		}
 	}
 }
 
 func BenchmarkFlatMapDeleteString(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		b.StopTimer()
 		fm := genStringFlatMap(lengthLimit)
 		b.StartTimer()
-		for j := 0; j < lengthLimit; j++ {
-			fm.Delete(fmt.Sprintf("test:%d", j))
+		for i := range lengthLimit {
+			fm.Delete(fmt.Sprintf("test:%d", i))
 		}
 	}
 }
 
 func BenchmarkMapDeleteString(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		b.StopTimer()
 		m := genStringMap(lengthLimit)
 		b.StartTimer()
-		for j := 0; j < lengthLimit; j++ {
-			delete(m, fmt.Sprintf("test:%d", j))
+		for i := range lengthLimit {
+			delete(m, fmt.Sprintf("test:%d", i))
 		}
 	}
 }

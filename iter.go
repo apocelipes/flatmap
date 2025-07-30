@@ -6,7 +6,9 @@ func (f *FlatMap[K, V]) All() iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		for i := range f.data {
 			pair := f.data[i]
-			yield(pair.First, pair.Second)
+			if !yield(pair.First, pair.Second) {
+				return
+			}
 		}
 	}
 }
@@ -14,7 +16,9 @@ func (f *FlatMap[K, V]) All() iter.Seq2[K, V] {
 func (f *FlatMap[K, V]) Keys() iter.Seq[K] {
 	return func(yield func(K) bool) {
 		for i := range f.data {
-			yield(f.data[i].First)
+			if !yield(f.data[i].First) {
+				return
+			}
 		}
 	}
 }
@@ -22,7 +26,9 @@ func (f *FlatMap[K, V]) Keys() iter.Seq[K] {
 func (f *FlatMap[K, V]) Values() iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for i := range f.data {
-			yield(f.data[i].Second)
+			if !yield(f.data[i].Second) {
+				return
+			}
 		}
 	}
 }
