@@ -26,6 +26,36 @@ func TestFlatMapAll(t *testing.T) {
 	}
 }
 
+func TestFlatMapAllContinueBreak(t *testing.T) {
+	fm := FlatMap[int, string]{
+		data: []Pair[int, string]{
+			{1, "4"},
+			{2, "3"},
+			{3, "2"},
+			{4, "1"},
+		},
+	}
+	count := 0
+	for range fm.All() {
+		count++
+		break
+	}
+	if count != 1 {
+		t.Error("break did not work")
+	}
+
+	count = 0
+	for k := range fm.All() {
+		if k%2 == 0 {
+			continue
+		}
+		count++
+	}
+	if count != 2 {
+		t.Error("continue did not work")
+	}
+}
+
 func TestFlatMapKeys(t *testing.T) {
 	fm := FlatMap[int, string]{
 		data: []Pair[int, string]{
@@ -42,6 +72,36 @@ func TestFlatMapKeys(t *testing.T) {
 	}
 }
 
+func TestFlatMapKeysContinueBreak(t *testing.T) {
+	fm := FlatMap[int, string]{
+		data: []Pair[int, string]{
+			{1, "4"},
+			{2, "3"},
+			{3, "2"},
+			{4, "1"},
+		},
+	}
+	count := 0
+	for range fm.Keys() {
+		count++
+		break
+	}
+	if count != 1 {
+		t.Error("break did not work")
+	}
+
+	count = 0
+	for k := range fm.Keys() {
+		if k%2 == 0 {
+			continue
+		}
+		count++
+	}
+	if count != 2 {
+		t.Error("continue did not work")
+	}
+}
+
 func TestFlatMapValues(t *testing.T) {
 	fm := FlatMap[int, string]{
 		data: []Pair[int, string]{
@@ -55,5 +115,35 @@ func TestFlatMapValues(t *testing.T) {
 	got := slices.Collect(fm.Values())
 	if !slices.Equal(got, values) {
 		t.Errorf("values got: %v, want: %v", got, values)
+	}
+}
+
+func TestFlatMapValuesContinueBreak(t *testing.T) {
+	fm := FlatMap[int, int]{
+		data: []Pair[int, int]{
+			{1, 4},
+			{2, 3},
+			{3, 2},
+			{4, 1},
+		},
+	}
+	count := 0
+	for range fm.Values() {
+		count++
+		break
+	}
+	if count != 1 {
+		t.Error("break did not work")
+	}
+
+	count = 0
+	for v := range fm.Values() {
+		if v%2 == 0 {
+			continue
+		}
+		count++
+	}
+	if count != 2 {
+		t.Error("continue did not work")
 	}
 }
