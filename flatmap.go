@@ -91,8 +91,8 @@ func (f *FlatMap[K, V]) Reset() {
 }
 
 type FlatMapIter[K cmp.Ordered, V any] struct {
-	pos  int
-	data []Pair[K, V]
+	pos int
+	m   *FlatMap[K, V]
 }
 
 func (fi *FlatMapIter[K, V]) Next() {
@@ -102,24 +102,24 @@ func (fi *FlatMapIter[K, V]) Next() {
 func (fi *FlatMapIter[K, V]) Val() (K, V) {
 	var key K
 	var value V
-	if fi.pos >= 0 && fi.pos < len(fi.data) {
-		key = fi.data[fi.pos].First
-		value = fi.data[fi.pos].Second
+	if fi.pos >= 0 && fi.pos < len(fi.m.data) {
+		key = fi.m.data[fi.pos].First
+		value = fi.m.data[fi.pos].Second
 	}
 	return key, value
 }
 
 func (fi *FlatMapIter[K, V]) HasNext() bool {
-	return fi.pos >= len(fi.data)
+	return fi.pos >= len(fi.m.data)
 }
 
-func newFlatMapIter[K cmp.Ordered, V any](pos int, data []Pair[K, V]) *FlatMapIter[K, V] {
+func newFlatMapIter[K cmp.Ordered, V any](pos int, m *FlatMap[K, V]) *FlatMapIter[K, V] {
 	return &FlatMapIter[K, V]{
-		pos:  pos,
-		data: data,
+		pos: pos,
+		m:   m,
 	}
 }
 
 func (f *FlatMap[K, V]) Range() *FlatMapIter[K, V] {
-	return newFlatMapIter(0, f.data)
+	return newFlatMapIter(0, f)
 }
